@@ -17,7 +17,23 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <link rel="manifest" href="manifest.webmanifest">
 
-  <!-- Firebase Scripts -->
+  <script>
+    window.PlaygamaAds = window.PlaygamaAds || {
+      Initialize: function() { 
+        console.warn("Adblocker/SDK Missing: Using dummy Initialize."); 
+        return Promise.resolve(); 
+      },
+      ShowAd: function(type, callbacks) {
+        console.warn("Adblocker active: Skipping " + type + " ad.");
+        if (callbacks) {
+          if (typeof callbacks.onClose === 'function') callbacks.onClose();
+          if (typeof callbacks.onCompleted === 'function') callbacks.onCompleted();
+        }
+      },
+      AdSelection: function() { return false; }
+    };
+  </script>
+
   <script src="https://www.gstatic.com/firebasejs/10.2.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.2.0/firebase-analytics-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.2.0/firebase-auth-compat.js"></script>
@@ -32,106 +48,45 @@
   </script>
 
   <script src="firebase/firebase.js"></script>
-
-  <!-- Xsolla Scripts -->
   <script src="xsolla/xsolla.js"></script>
-
   <script src="utils.js"></script>
 
-  <!-- SEO Meta Tags -->
-  <meta name="description" content="Play RocketGoal - the ultimate online multiplayer car soccer game and compete in the Rocket Goal League. Drive rocket-powered cars, score amazing goals, and dominate the arena. Come compete in fast-paced matches and win against players worldwide in this addictive vehicle football battle arena. Free to play!">
-  <meta name="keywords" content="RocketGoal, car soccer, car football, rocket cars, rocket powered vehicles, rocket goal league, soccer league online, vehicle soccer, multiplayer sports, arena soccer, automotive football, car sports game, rocket boost, aerial goals, competitive league, browser game, online sports game, free soccer game, unblocked games">
+  <meta name="description" content="Play RocketGoal - ultimate online multiplayer car soccer.">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph Tags for social sharing -->
-  <meta property="og:title" content="RocketGoal | Dominate the Arena">
-  <meta property="og:description" content="Come play and win in the ultimate car soccer game! Drive rocket-powered cars, score incredible goals, and compete against players worldwide in fast-paced vehicle football matches!">
-  <meta property="og:image" content="https://rocketgoal.io/og-image.png">
-  <meta property="og:url" content="https://rocketgoal.io">
-  <meta property="og:type" content="website">
-
-  <!-- Twitter Card data -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="RocketGoal | Dominate the Arena">
-  <meta name="twitter:description" content="Come play and win in the ultimate car soccer game! Drive rocket-powered cars, score incredible goals, and compete against players worldwide in fast-paced vehicle football matches!">
-  <meta name="twitter:image" content="https://rocketgoal.io/og-image.png">
-
-  <!-- Smartlook Tracking Code -->
   <script type='text/javascript'>
     window.smartlook || (function(d) {
-      var o = smartlook = function() {
-          o.api.push(arguments)
-        },
-        h = d.getElementsByTagName('head')[0];
-      var c = d.createElement('script');
-      o.api = new Array();
-      c.async = true;
-      c.type = 'text/javascript';
-      c.charset = 'utf-8';
-      c.src = 'https://web-sdk.smartlook.com/recorder.js';
-      h.appendChild(c);
+      var o = smartlook = function() { o.api.push(arguments) }, h = d.getElementsByTagName('head')[0];
+      var c = d.createElement('script'); o.api = new Array(); c.async = true; c.type = 'text/javascript';
+      c.charset = 'utf-8'; c.src = 'https://web-sdk.smartlook.com/recorder.js'; h.appendChild(c);
     })(document);
   </script>
 
   <script>
     window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag('consent', 'default', {
-      ad_storage: 'granted',
-      analytics_storage: 'granted',
-      ad_user_data: 'granted',
-      ad_personalization: 'granted'
-    });
-
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      analytics_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      region: [
-        'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-        'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-        'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
-        'IS', 'LI', 'NO',
-        'GB',
-        'CH'
-      ]
-    });
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'default', { ad_storage: 'granted', analytics_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' });
   </script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZN6YDCFCY8" onload="onGtagLoaded()" onerror="onGtagLoaded()"> </script>
 
   <script>
     function onGtagLoaded() {
-      if (window.playgamaScript) {
-        return;
-      }
-
+      if (window.playgamaScript) return;
       gtag('js', new Date());
       gtag('config', 'G-ZN6YDCFCY8');
 
       window.playgamaScript = document.createElement("script");
       window.playgamaScript.src = "https://playgama.com/ads/pockethaven.v0.1.js";
       window.playgamaScript.async = true;
+      // If the ad script fails to load (blocked), the dummy window.PlaygamaAds created above handles it.
       document.head.appendChild(window.playgamaScript);
     }
   </script>
 
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://rocketgoal.io">
-
   <style>
-    body {
-      background: #000;
-    }
-
-    #unity-canvas {
-      outline: none;
-    }
+    body { background: #000; margin: 0; overflow: hidden; }
+    #unity-canvas { outline: none; width: 100%; height: 100%; }
   </style>
 </head>
 
@@ -146,6 +101,7 @@
     </div>
     <div id="unity-warning"> </div>
   </div>
+
   <script>
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");
@@ -153,26 +109,15 @@
     var progressBarFull = document.querySelector("#unity-progress-bar-full");
     var warningBanner = document.querySelector("#unity-warning");
 
-    // Shows a temporary message banner/ribbon for a few seconds, or
-    // a permanent error message on top of the canvas if type=='error'.
-    // If type=='warning', a yellow highlight color is used.
-    // Modify or remove this function to customize the visually presented
-    // way that non-critical warnings and error messages are presented to the
-    // user.
     function unityShowBanner(msg, type) {
-      function updateBannerVisibility() {
-        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-      }
+      function updateBannerVisibility() { warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'; }
       var div = document.createElement('div');
       div.innerHTML = msg;
       warningBanner.appendChild(div);
       if (type == 'error') div.style = 'background: red; padding: 10px;';
       else {
         if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-        setTimeout(function() {
-          warningBanner.removeChild(div);
-          updateBannerVisibility();
-        }, 5000);
+        setTimeout(function() { warningBanner.removeChild(div); updateBannerVisibility(); }, 5000);
       }
       updateBannerVisibility();
     }
@@ -190,13 +135,6 @@
       showBanner: unityShowBanner,
     };
 
-    // By default Unity keeps WebGL canvas render target size matched with
-    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-    // Set this to false if you want to decouple this synchronization from
-    // happening inside the engine, and you would instead like to size up
-    // the canvas DOM size and WebGL render target sizes yourself.
-    // config.matchWebGLToCanvasSize = false;
-
     loadingBar.style.display = "block";
 
     var script = document.createElement("script");
@@ -206,55 +144,13 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
-
-        // Store the Unity instance in the global scope
         window.unityInstance = unityInstance;
         window.unityGame = unityInstance;
-
-        // Initialize Firebase with Unity instance
         initializeFirebase(unityInstance);
-
         initializeUtils(unityInstance);
-
-      }).catch((message) => {
-        alert(message);
-      });
+      }).catch((message) => { alert(message); });
     };
     document.body.appendChild(script);
   </script>
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "VideoGame",
-      "name": "RocketGoal",
-      "description": "Experience high-octane vehicular soccer in this online multiplayer game. Come play and win in the competitive arena where you control rocket-powered cars, perform aerial maneuvers, boost across the field, and score spectacular goals. Battle opponents worldwide in this free-to-play browser-based sports game combining fast cars with football action.",
-      "genre": ["Sports", "Soccer", "Football", "Multiplayer", "Action", "Racing", "Competitive", "Arena"],
-      "gamePlatform": ["Web Browser", "WebGL"],
-      "applicationCategory": "Game",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD",
-        "availability": "https://schema.org/InStock"
-      },
-      "screenshot": [{
-        "@type": "ImageObject",
-        "url": "https://rocketgoal.io/og-image.png",
-        "width": "1920",
-        "height": "1080",
-        "caption": "Rocket-powered cars competing in an intense soccer match"
-      }],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1024",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
-      "keywords": "car soccer, rocket cars, vehicle football, online sports league, multiplayer arena, automotive soccer, rocket boost, aerial goals, competitive gaming"
-    }
-  </script>
 </body>
-
 </html>
